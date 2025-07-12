@@ -10,7 +10,7 @@ Uniicon is a revolutionary AI-powered platform that generates stunning 3D animat
 
 ## Deployed Links
 
-AWS Deployed(Amplify): (https://staging.d3tdfl6tsd7y1a.amplifyapp.com/ )<img width="1886" height="175" alt="image" src="https://github.com/user-attachments/assets/293063c8-0cab-4dea-8f6b-e913d3997e01" />
+AWS Deployed(Amplify): (https://staging.d3tdfl6tsd7y1a.amplifyapp.com/ )
 
 
 ## ✨ Features
