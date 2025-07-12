@@ -1,0 +1,52 @@
+{
+  "name": "icon-x402-next",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock": "^3.817.0",
+    "@aws-sdk/client-bedrock-agent-runtime": "^3.817.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.817.0",
+    "@coinbase/cdp-sdk": "^1.13.0",
+    "@coinbase/coinbase-sdk": "^0.25.0",
+    "@coinbase/x402": "^0.3.8",
+    "@huggingface/inference": "^3.14.0",
+    "@rainbow-me/rainbowkit": "^2.2.4",
+    "@runwayml/sdk": "^2.1.0",
+    "@tanstack/react-query": "^5.76.0",
+    "@upstash/redis": "^1.35.0",
+    "buffer": "^6.0.3",
+    "canvas": "^3.1.0",
+    "canvas-confetti": "^1.9.3",
+    "dotenv": "^16.5.0",
+    "ethers": "^6.14.0",
+    "file-type": "^21.0.0",
+    "fs": "^0.0.1-security",
+    "next": "15.3.3",
+    "openai": "^4.103.0",
+    "path": "^0.12.7",
+    "pinata": "^2.4.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "replicate": "^1.0.1",
+    "sharp": "^0.34.2",
+    "uuid": "^11.1.0",
+    "viem": "2.23.9",
+    "wagmi": "2.14.15",
+    "x402-fetch": "^0.3.3",
+    "x402-next": "^0.3.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "tailwindcss": "^4"
+  }
+}
