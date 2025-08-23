@@ -1,56 +1,72 @@
-import { useState, useEffect } from "react";
+"use client";
 
-export default function ErrorToast({ message, duration = 10000 }) {
-  const [visible, setVisible] = useState(true);
+import { useState } from "react";
 
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), duration);
-    return () => clearTimeout(timer);
-  }, [duration]);
+export default function ErrorToast({ message, hint, details }) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!visible) return null;
+  if (!message) return null;
+
+  const isAWSError = message.includes('AWS Access Denied') || message.includes('not authorized');
 
   return (
-    <div
-      className="fixed bottom-6 right-6 flex items-center w-full max-w-sm p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800 border border-red-200 dark:border-red-700 z-50 animate-slide-in"
-      role="alert"
-    >
-      <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-        <svg
-          className="w-5 h-5"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
-        </svg>
-        <span className="sr-only">Error icon</span>
+    <div className="fixed top-4 right-4 z-50 max-w-md">
+      <div className={`rounded-lg p-4 shadow-lg ${
+        isAWSError ? 'bg-red-50 border border-red-200' : 'bg-orange-50 border border-orange-200'
+      }`}>
+        <div className="flex items-start">
+          <div className={`flex-shrink-0 ${isAWSError ? 'text-red-400' : 'text-orange-400'}`}>
+            {isAWSError ? '🚫' : '⚠️'}
+          </div>
+          <div className="ml-3 flex-1">
+            <h3 className={`text-sm font-medium ${
+              isAWSError ? 'text-red-800' : 'text-orange-800'
+            }`}>
+              {message}
+            </h3>
+            
+            {hint && (
+              <p className={`mt-1 text-sm ${
+                isAWSError ? 'text-red-700' : 'text-orange-700'
+              }`}>
+                {hint}
+              </p>
+            )}
+
+            {details && (
+              <div className="mt-2">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className={`text-xs underline ${
+                    isAWSError ? 'text-red-600 hover:text-red-800' : 'text-orange-600 hover:text-orange-800'
+                  }`}
+                >
+                  {isExpanded ? 'Hide details' : 'Show technical details'}
+                </button>
+                
+                {isExpanded && (
+                  <div className={`mt-2 p-2 rounded text-xs font-mono ${
+                    isAWSError ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'
+                  }`}>
+                    {details}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {isAWSError && (
+              <div className="mt-3 p-2 bg-red-100 rounded text-xs text-red-800">
+                <strong>Quick Fix:</strong>
+                <ul className="mt-1 list-disc list-inside">
+                  <li>Check your IAM user permissions</li>
+                  <li>Remove any explicit DENY policies for Bedrock</li>
+                  <li>Ensure bedrock:InvokeModel and bedrock:InvokeAgent are allowed</li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="ms-3 text-sm font-normal">{message}</div>
-      <button
-        onClick={() => setVisible(false)}
-        type="button"
-        className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
-        aria-label="Close"
-      >
-        <span className="sr-only">Close</span>
-        <svg
-          className="w-3 h-3"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 14"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-          />
-        </svg>
-      </button>
     </div>
   );
 }

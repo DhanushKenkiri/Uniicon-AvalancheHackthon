@@ -1,18 +1,10 @@
 'use client';
 
-import { useAccount, useChainId } from 'wagmi';
-import { config } from '@/config/wagmi';
 import Image from 'next/image';
 import lock from '../../public/lock.png';
 
-const TARGET_CHAIN_ID = config.chains[0].id;
-
 export default function Input({ value, onChange, loading }) {
-  const { isConnected } = useAccount();
-  const chainId = useChainId();
-
-  const needsSwitch = isConnected && chainId !== TARGET_CHAIN_ID;
-  const disabled = !isConnected || needsSwitch || loading;
+  const disabled = loading;
 
   return (
     <div className="relative w-full max-w-3xl">

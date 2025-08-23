@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
-import WalletProvider from "@/context/WalletProvider";
+import AppProvider from "@/context/AppProvider";
 import Banner from "@/components/banner";
 
 const geistSans = Geist({
@@ -15,20 +14,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "x402-Powered Animated Icons Generator",
-  description: "The first animated icons generator on Base powered by x402.",
+  title: "AI-Powered Animated Icons Generator",
+  description: "Generate beautiful animated icons using AI agents.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Banner/>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-[#36322f]`}
       >
+        <Banner/>
         <div className="flex justify-center w-full">
           <div className="w-full max-w-[100vw] px-[15vw]">
-            <WalletProvider>{children}</WalletProvider>
+            <AppProvider>{children}</AppProvider>
           </div>
         </div>
       </body>

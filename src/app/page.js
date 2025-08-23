@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { wrapFetchWithPayment } from "x402-fetch";
-import { useWalletClient } from "wagmi";
 
 import Header from "@/components/header";
 import Input from "@/components/input";
@@ -15,8 +13,6 @@ import Image from "next/image";
 import glow from "../../public/glow.png";
 
 export default function HomePage() {
-  const { data: walletClient } = useWalletClient();
-
   const [input, setInput] = useState("");
   const [result, setResult] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -31,20 +27,13 @@ export default function HomePage() {
   }, [result]);
 
   const handleSubmit = async (e) => {
-    if (!walletClient) {
-      setError("Please connect your wallet first.");
-      return;
-    }
-
-    const fetchWithPayment = wrapFetchWithPayment(fetch, walletClient);
-
     setLoading(true);
     setError(null);
     setResult(null);
     setShowModal(false);
 
     try {
-      const res = await fetchWithPayment("/api/protected", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input }),
@@ -52,14 +41,21 @@ export default function HomePage() {
 
       if (res.ok) {
         const data = await res.json();
-        console.log(input);
         setResult(data.result); // This triggers modal via useEffect
       } else {
         const err = await res.json();
-        setError(err.error || "Unknown error");
+        setError({
+          message: err.error || "Unknown error",
+          hint: err.hint,
+          details: err.details
+        });
       }
     } catch (err) {
-      setError(err.message || "Request failed");
+      setError({
+        message: err.message || "Request failed",
+        hint: "Check your network connection and try again",
+        details: err.stack
+      });
     } finally {
       setLoading(false);
     }
@@ -85,7 +81,7 @@ export default function HomePage() {
             <br />
             <span className="block leading-[1.3]">
               <span className="relative px-1 text-orange-600 inline-flex justify-center items-center">
-                runs by AI agents on Base
+                powered by AI agents
               </span>
             </span>
           </h1>
@@ -93,7 +89,7 @@ export default function HomePage() {
 
         <p className="text-center text-[#71717a] text-lg mt-8 max-w-2xl mx-82">
           Let a team of AI agents to plan, draw, script, and animate any icon
-          you want. X402 protocol-powered, pay-per-use.
+          you want. Simple and easy to use.
         </p>
 
         <div className="w-full flex flex-col items-center gap-4 mt-12">
