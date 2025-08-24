@@ -41,3 +41,46 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Hardhat
+artifacts/
+cache/
+deployments/
+deployment-info.json
+
+# Test files and documentation (except README.md)
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+test/
+tests/
+__tests__/
+coverage/
+*.md
+!README.md
+
+# Exclude agent and MCP server directories
+agent-example/
+mcp-server/
+
+# Exclude duplicate or backup directories
+Uniicon/
+
+# Cursor AI
+.cursorignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+
+# Documentation files except README.md
+AVALANCHE_IMPLEMENTATION.md
+DEPLOYMENT.md

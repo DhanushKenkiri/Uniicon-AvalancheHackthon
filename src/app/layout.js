@@ -1,7 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AppProvider from "@/context/AppProvider";
+import WalletProvider from "@/context/WalletProvider";
 import Banner from "@/components/banner";
+
+// Import RainbowKit styles
+import '@rainbow-me/rainbowkit/styles.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "AI-Powered Animated Icons Generator",
-  description: "Generate beautiful animated icons using AI agents.",
+  title: "Uniicon - Private AI Icon Generation",
+  description: "Generate beautiful, private icons with AI on Avalanche blockchain",
+  keywords: "AI, icons, blockchain, Avalanche, privacy, NFT"
 };
 
 export default function RootLayout({ children }) {
@@ -24,12 +28,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-[#36322f]`}
       >
-        <Banner/>
-        <div className="flex justify-center w-full">
-          <div className="w-full max-w-[100vw] px-[15vw]">
-            <AppProvider>{children}</AppProvider>
-          </div>
-        </div>
+        <WalletProvider>
+          <Banner />
+          {children}
+        </WalletProvider>
       </body>
     </html>
   );

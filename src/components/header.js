@@ -32,7 +32,8 @@ export default function Header() {
         </div>
 
         {/* Button Section */}
-        <div className="flex space-x-3">          <a
+        <div className="flex space-x-3">
+          <a
             href="https://github.com/DhanushKenkiri/Uniicon/tree/main/agent-example"
             target="_blank"
             rel="noopener noreferrer"

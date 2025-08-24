@@ -1,12 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount, useSwitchChain } from "wagmi";
+import { config } from "@/config/wagmi";
 import Image from "next/image";
 
 import icon from "../../public/spark.png";
+import wallet from "../../public/wallet.png";
+import swap from "../../public/switch.png";
 import ProgressLoader from "./progress";
 
-export default function SubmitButton({ loading, onSubmit }) {
+const TARGET_CHAIN = config.chains[0]; // Avalanche Fuji
+const PAYMENT_AMOUNT = "0.02"; // 0.02 AVAX
+
+export default function SubmitButton({ loading, transactionPending, onSubmit }) {
+  const { openConnectModal } = useConnectModal();
+  const { isConnected, chainId, address } = useAccount();
+  const { switchChain, isPending: isSwitching } = useSwitchChain({ config });
+
+  const needsSwitch = isConnected && chainId !== TARGET_CHAIN.id;
+  const isDisabled = loading || isSwitching || transactionPending;
+  const showPricing = isConnected && !needsSwitch && !loading && !transactionPending;
+
   const [percentage, setPercentage] = useState(0);
   const intervalRef = useRef(null);
 
@@ -23,11 +39,8 @@ export default function SubmitButton({ loading, onSubmit }) {
         setPercentage(progress);
       }, 200);
     } else {
-      // If process finishes
       clearInterval(intervalRef.current);
       setPercentage(100);
-
-      // Optional: auto-reset to 0 after short delay
       setTimeout(() => setPercentage(0), 1000);
     }
 
@@ -35,16 +48,47 @@ export default function SubmitButton({ loading, onSubmit }) {
   }, [loading]);
 
   const handleClick = async () => {
-    if (onSubmit) {
-      onSubmit();
+    try {
+      if (!isConnected) {
+        console.log('Opening connect modal...');
+        if (openConnectModal) {
+          openConnectModal();
+        } else {
+          console.error('Connect modal not available');
+        }
+      } else if (needsSwitch) {
+        console.log('Switching chain to:', TARGET_CHAIN.name);
+        switchChain?.({ chainId: TARGET_CHAIN.id });
+      } else {
+        console.log('Starting generation process...');
+        // For Avalanche implementation, we'll call onSubmit directly
+        // The payment logic is handled in the onSubmit function
+        onSubmit?.();
+      }
+    } catch (error) {
+      console.error('Button click error:', error);
     }
   };
+
+  let buttonText = "Generate";
+  let buttonIcon = icon;
+
+  if (!isConnected) {
+    buttonText = "Connect Wallet To Generate";
+    buttonIcon = wallet;
+  } else if (needsSwitch) {
+    buttonText = `Switch to ${TARGET_CHAIN.name}`;
+    buttonIcon = swap;
+  } else if (transactionPending) {
+    buttonText = "Confirm Transaction";
+    buttonIcon = wallet;
+  }
 
   return (
     <div className="flex flex-col items-center">
       <button
         type="button"
-        disabled={loading}
+        disabled={isDisabled}
         onClick={handleClick}
         className="
           mt-5 rounded-[10px] text-lg font-semibold flex items-center justify-center
@@ -57,27 +101,43 @@ export default function SubmitButton({ loading, onSubmit }) {
         "
       >
         <Image
-          src={icon}
-          alt="Generate icon"
+          src={buttonIcon}
+          alt="icon"
           width={25}
           height={25}
           className="mr-2 -ml-1.5"
         />
         <span className="whitespace-nowrap">
-          {loading ? "Processing..." : "Generate Icon"}
+          {loading 
+            ? "Processing..." 
+            : transactionPending 
+            ? "Confirm in Wallet..." 
+            : buttonText
+          }
         </span>
       </button>
 
-      {/* Loader */}
-      {loading && (
+      {/* Loader or Pricing Info */}
+      {loading ? (
         <div className="pt-4 w-full">
           <ProgressLoader percentage={Math.floor(percentage)} />
         </div>
-      )}
-
-      {!loading && (
+      ) : transactionPending ? (
         <p className="text-sm text-gray-400 pt-3 text-center">
-          Click to generate your animated icon
+          Please confirm the transaction in your wallet...
+        </p>
+      ) : showPricing ? (
+        <p className="text-sm text-gray-400 flex items-center justify-center gap-1 pt-3">
+          Fixed pricing: {PAYMENT_AMOUNT} AVAX per generation
+        </p>
+      ) : (
+        <p className="text-sm text-gray-400 pt-3 text-center">
+          {!isConnected 
+            ? "Connect your wallet to generate animated icons" 
+            : needsSwitch 
+            ? `Switch to ${TARGET_CHAIN.name} network`
+            : "Click to generate your animated icon"
+          }
         </p>
       )}
     </div>
