@@ -105,7 +105,7 @@ NEXT_PUBLIC_NFT_CONTRACT_ADDRESS=0x86233442F5DAA7e0F010BA92f4187D6cb1C35E39
 ```
 
 ### Wallet Setup
-1. **Install MetaMask** or compatible Web3 wallet
+1. **Install Core Wallet** or compatible Web3 wallet
 2. **Add Avalanche Fuji Testnet**:
    - Network Name: Avalanche Fuji C-Chain
    - RPC URL: https://api.avax-test.network/ext/bc/C/rpc
